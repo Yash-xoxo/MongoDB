@@ -1,0 +1,5 @@
+Node.js ≥ 14.x (node -v)
+
+npm (npm -v)
+
+MongoDB installed or running via Docker

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Job Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    section {
+      background: white;
+      padding: 15px;
+      margin: 20px auto;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #eee;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Job & Application Dashboard</h1>
+
+  <!-- Job Post -->
+  <section>
+    <h2>Job Post</h2>
+    <form id="jobForm">
+      <label>Title</label>
+      <input type="text" id="jobTitle" required />
+
+      <label>Company</label>
+      <input type="text" id="jobCompany" required />
+
+      <label>Description</label>
+      <textarea id="jobDescription" required></textarea>
+
+      <button type="submit">Post Job</button>
+    </form>
+  </section>
+
+  <!-- Resume Upload -->
+  <section>
+    <h2>Resume Upload</h2>
+    <form id="resumeForm" enctype="multipart/form-data">
+      <label>Select Resume (PDF)</label>
+      <input type="file" id="resumeFile" required />
+      <button type="submit">Upload Resume</button>
+    </form>
+    <p id="resumePath"></p>
+  </section>
+
+  <!-- Job Apply -->
+  <section>
+    <h2>Job Apply</h2>
+    <form id="applyForm">
+      <label>Job ID</label>
+      <input type="text" id="applyJobId" required />
+
+      <label>Name</label>
+      <input type="text" id="applicantName" required />
+
+      <label>Email</label>
+      <input type="email" id="applicantEmail" required />
+
+      <label>Resume Path</label>
+      <input type="text" id="applicantResume" required />
+
+      <button type="submit">Apply</button>
+    </form>
+  </section>
+
+  <!-- Application List -->
+  <section>
+    <h2>Application List</h2>
+    <ul id="applicationList"></ul>
+  </section>
+
+  <script>
+    // POST job
+    document.getElementById('jobForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const title = document.getElementById('jobTitle').value;
+      const company = document.getElementById('jobCompany').value;
+      const description = document.getElementById('jobDescription').value;
+
+      await fetch('/api/jobs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, company, description })
+      });
+
+      alert('Job Posted');
+      e.target.reset();
+    });
+
+    // Upload resume
+    document.getElementById('resumeForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fileInput = document.getElementById('resumeFile');
+      const formData = new FormData();
+      formData.append('resume', fileInput.files[0]);
+
+      const res = await fetch('/uploads', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      document.getElementById('resumePath').textContent = `Saved at: ${data.path}`;
+    });
+
+    // Apply to job
+    document.getElementById('applyForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const jobId = document.getElementById('applyJobId').value;
+      const name = document.getElementById('applicantName').value;
+      const email = document.getElementById('applicantEmail').value;
+      const resume = document.getElementById('applicantResume').value;
+
+      await fetch('/api/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobId, name, email, resume })
+      });
+
+      alert('Application submitted');
+      e.target.reset();
+      loadApplications();
+    });
+
+    // Load application list
+    async function loadApplications() {
+      const res = await fetch('/api/applications');
+      const apps = await res.json();
+
+      const list = document.getElementById('applicationList');
+      list.innerHTML = '';
+      apps.forEach(app => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${app.name}</strong> applied to <code>${app.jobId}</code><br>
+          <em>${app.email}</em> - <code>${app.status}</code><br>
+          <small>Resume: ${app.resume}</small><br>
+          <small>At: ${new Date(app.appliedAt).toLocaleString()}</small>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    loadApplications();
+  </script>
+
+</body>
+</html>
