@@ -59,7 +59,7 @@ MONGO_URI=mongodb://admin:pass123@localhost:27017
 
 ---
 
-🐳 Run MongoDB via Docker
+## 🐳 Run MongoDB via Docker
 ```bash
 docker run -d --name mongodb \
   -p 27017:27017 \
@@ -68,27 +68,30 @@ docker run -d --name mongodb \
   mongo:6.0
 ```
 ---
-🚀 Run the App
+## 🚀 Run the App
+
+```
 node server.js
+```
 Go to: ```http://localhost:5000```
 ---
-📁 API Endpoints
+## 📁 API Endpoints
 Jobs
-# GET /api/jobs – List jobs
+#### GET /api/jobs – List jobs
 
-# POST /api/jobs – Add new job
-
----
-
-Applications
-
-# GET /api/applications – List applications
-
-# POST /api/applications – Submit application
+#### POST /api/jobs – Add new job
 
 ---
 
-# Dashboard Preview
+## Applications
+
+#### GET /api/applications – List applications
+
+#### POST /api/applications – Submit application
+
+---
+
+#### Dashboard Preview
 
 ![img](img/pp.png)
 
