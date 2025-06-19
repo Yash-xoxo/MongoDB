@@ -74,23 +74,26 @@ Go to: ```http://localhost:5000```
 ---
 📁 API Endpoints
 Jobs
-#GET /api/jobs – List jobs
+# GET /api/jobs – List jobs
 
-#POST /api/jobs – Add new job
+# POST /api/jobs – Add new job
 
 ---
 
 Applications
 
-#GET /api/applications – List applications
+# GET /api/applications – List applications
 
-#POST /api/applications – Submit application
+# POST /api/applications – Submit application
 
 ---
 
-#Dashboard Preview
+# Dashboard Preview
 
 ![img](img/pp.png)
+
+
+
 HTML page with a form
 Job listings loaded dynamically via JavaScript
 Works directly in browser (no React needed)
